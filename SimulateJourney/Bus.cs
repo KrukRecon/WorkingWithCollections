@@ -11,25 +11,34 @@ namespace Pluralsight.ArraysCollections.Demos
         public const int Capacity = 5;
         public int Space { get => Capacity - _passengers.Count; }
 
-        private Stack<Passenger> _passengers = new Stack<Passenger>();
+        private LinkedList<Passenger> _passengers = new LinkedList<Passenger>();
         public bool Load(Passenger passenger)
         {
             if (Space < 1)
                 return false;
 
-            _passengers.Push(passenger);
+            _passengers.AddLast(passenger);
             Console.WriteLine($"{passenger} got on the bus");
             return true;
         }
 
-        public void ArriveAtTerminus()
+        public void ArriveAt(string place)
         {
-            Console.WriteLine($"\r\nBus arriving at terminus");
-            while (_passengers.Count > 0)
+            Console.WriteLine($"\r\nBus arriving at {place}");
+            if (_passengers.Count == 0)
+                return;
+            LinkedListNode<Passenger> currentNode = _passengers.First;
+            do
             {
-                Passenger passenger = _passengers.Pop();
-                Console.WriteLine($"{passenger} got off the bus");
-            }
+                LinkedListNode<Passenger> nextNode = currentNode.Next;
+                if (currentNode.Value.Destination == place)
+                {
+                    Console.WriteLine($"{currentNode.Value} is getting off");
+                    _passengers.Remove(currentNode);
+                }
+
+                currentNode = nextNode;
+            } while (currentNode != null);
 
             Console.WriteLine($"There are {_passengers.Count} people still on the bus");
         }
